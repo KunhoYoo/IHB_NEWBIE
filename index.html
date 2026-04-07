@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>신입 교육 백과사전</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F8FA;
+    --surface: #FFFFFF;
+    --surface2: #F2F4F8;
+    --border: #E8EBF0;
+    --text-primary: #191F28;
+    --text-secondary: #6B7684;
+    --text-tertiary: #ADB5BD;
+    --accent: #3182F6;
+    --accent-light: #EBF3FE;
+    --accent2: #00C48C;
+    --accent2-light: #E6FAF5;
+    --accent3: #FF6B35;
+    --accent3-light: #FFF0EB;
+    --accent4: #9B59B6;
+    --accent4-light: #F5EEF8;
+    --tag-banking: #3182F6;
+    --tag-network: #00C48C;
+    --tag-terms: #FF6B35;
+    --tag-cases: #9B59B6;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow-md: 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── SIDEBAR ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 10;
+  }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--text-primary);
+    letter-spacing: -0.4px;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .logo-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .sidebar-search {
+    padding: 16px 16px 8px;
+  }
+  .search-wrap {
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .search-wrap input:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+  .search-wrap input::placeholder { color: var(--text-tertiary); }
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .sidebar-nav { padding: 8px 12px; flex: 1; }
+
+  .nav-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: background .15s, color .15s;
+    margin-bottom: 2px;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text-primary); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); }
+  .nav-item .nav-icon {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-icon { background: var(--accent); }
+  .nav-item:not(.active) .nav-icon { background: var(--surface2); }
+  .nav-count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--surface2);
+    color: var(--text-tertiary);
+    border-radius: 20px;
+    padding: 2px 8px;
+    min-width: 24px;
+    text-align: center;
+  }
+  .nav-item.active .nav-count { background: var(--accent); color: #fff; }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 900px;
+  }
+
+  /* ── HEADER ── */
+  .page-header { margin-bottom: 36px; }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+  }
+  .page-header p { font-size: 14px; color: var(--text-secondary); }
+
+  /* ── STATS BAR (NOW ACTS AS CHIPS) ── */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    user-select: none;
+  }
+  .stat-card:hover { border-color: #D0D9E8; background: var(--surface2); }
+  .stat-card.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: #fff; }
+  .stat-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .stat-icon.gray { background: #E8EBF0; color: #191F28; }
+  .stat-icon.blue { background: var(--accent-light); }
+  .stat-icon.green { background: var(--accent2-light); }
+  .stat-icon.orange { background: var(--accent3-light); }
+  .stat-icon.purple { background: var(--accent4-light); }
+  .stat-num { font-size: 20px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
+  .stat-label { font-size: 11px; color: var(--text-secondary); margin-top: 1px; font-weight: 600; }
+
+  /* ── ENTRY CARDS ── */
+  .entries-grid { display: flex; flex-direction: column; gap: 12px; }
+
+  .entry-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: box-shadow .2s, border-color .2s, transform .15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .entry-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: #D0D9E8;
+    transform: translateY(-1px);
+  }
+  .entry-card.expanded { border-color: #C8D5EC; cursor: default; }
+
+  .entry-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+  }
+  .entry-tag {
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .tag-banking { background: var(--accent-light); color: var(--tag-banking); }
+  .tag-network { background: var(--accent2-light); color: var(--tag-network); }
+  .tag-terms { background: var(--accent3-light); color: var(--tag-terms); }
+  .tag-cases { background: var(--accent4-light); color: var(--tag-cases); }
+
+  .entry-title-wrap { flex: 1; }
+  .entry-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .entry-subtitle { font-size: 13px; color: var(--text-secondary); }
+  .entry-chevron {
+    font-size: 18px;
+    color: var(--text-tertiary);
+    transition: transform .25s;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .entry-card.expanded .entry-chevron { transform: rotate(180deg); }
+
+  .entry-body {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    position: relative;
+  }
+  .entry-card.expanded .entry-body { display: block; }
+
+  /* Admin Actions */
+  .admin-actions {
+    position: absolute;
+    top: 16px;
+    right: 0;
+    display: flex;
+    gap: 8px;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-edit { background: var(--surface2); color: var(--text-primary); }
+  .btn-edit:hover { background: #E2E6ED; }
+  .btn-delete { background: #FFF0EB; color: #FF6B35; }
+  .btn-delete:hover { background: #FFE0D6; }
+
+  .entry-section { margin-bottom: 18px; }
+  .entry-section:last-child { margin-bottom: 0; }
+  .entry-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+  }
+  .entry-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .entry-desc strong { color: var(--text-primary); font-weight: 600; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .info-item {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .info-item-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 4px; }
+  .info-item-value { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
+  .steps-list { display: flex; flex-direction: column; gap: 8px; }
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .alert-box {
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-top: 10px;
+  }
+  .alert-warn { background: #FFF8E6; color: #7A5300; border-left: 3px solid #F0B429; }
+  .alert-info { background: var(--accent-light); color: #1558BE; border-left: 3px solid var(--accent); }
+  .alert-success { background: var(--accent2-light); color: #00734F; border-left: 3px solid var(--accent2); }
+
+  .tag-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .mini-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--surface2);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+  }
+
+  /* ── EMPTY / NO RESULT ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: var(--text-tertiary);
+    display: none;
+  }
+  .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── EDITOR TOOLBAR ── */
+  .editor-toolbar {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 8px;
+    background: var(--surface2);
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .editor-toolbar button {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .editor-toolbar button:hover { background: var(--surface2); }
+  .rich-editor {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    overflow-y: auto;
+    background: #fff;
+  }
+  .rich-editor:focus { border-color: var(--accent); }
+
+/* 새로 추가할 로고 이미지 전용 스타일 */
+.custom-logo {
+  width: 145px;
+  height: auto;
+  display: block;
+}
+
+  /* scrollbar */
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 768px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; min-width: unset; height: auto; position: static; }
+    .main { padding: 24px 20px; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+<div class="sidebar-logo">
+  <div class="logo-badge">
+    <img src="logo.png" alt="위키백과 내부판 로고" class="custom-logo">
+  </div>
+  <div class="logo-sub">신입 교육 지식 베이스 v1.0</div>
+</div>
+
+
+
+    <div class="sidebar-search">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="sidebarSearch" placeholder="용어 검색..." oninput="onSearch(this.value)">
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">카테고리</div>
+      <div class="nav-item active" onclick="filterCategory('all', this)">
+        <div class="nav-icon">📚</div>
+        전체 보기
+        <span class="nav-count" id="cnt-all">0</span>
+      </div>
+      <div class="nav-item" onclick="filterCategory('banking', this)">
+        <div class="nav-icon">🏦</div>
+        펌뱅킹
+        <span class="nav-count" id="cnt-banking">0</span>
+      </div>
+      <div class="nav-item" onclick="filterCategory('network', this)">
+        <div class="nav-icon">🌐</div>
+        네트워크
+        <span class="nav-count" id="cnt-network">0</span>
+      </div>
+      <div class="nav-item" onclick="filterCategory('terms', this)">
+        <div class="nav-icon">📝</div>
+        업무 용어
+        <span class="nav-count" id="cnt-terms">0</span>
+      </div>
+      <div class="nav-item" onclick="filterCategory('cases', this)">
+        <div class="nav-icon">🛠️</div>
+        대응 사례
+        <span class="nav-count" id="cnt-cases">0</span>
+      </div>
+
+      <div class="nav-section-label" style="margin-top:8px">관리자 도구</div>
+      <div class="nav-item" onclick="openAddModal()">
+        <div class="nav-icon">➕</div>
+        항목 추가
+      </div>
+      <div class="nav-item" onclick="scrollToTop()">
+        <div class="nav-icon">⬆️</div>
+        맨 위로
+      </div>
+    </nav>
+  </aside>
+
+  <main class="main" id="mainPanel">
+    <div class="page-header">
+      <h1>신입 교육 백과사전 📖</h1>
+      <p>펌뱅킹 · 네트워크 · 업무 용어 · 대응 사례를 한곳에서 빠르게 찾아보세요.</p>
+    </div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="entries-grid" id="entriesGrid"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🔎</div>
+      <p>검색 결과가 없거나 데이터를 불러오는 중입니다.</p>
+    </div>
+  </main>
+</div>
+
+<div id="addModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:600px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <h2 id="modalTitle" style="font-size:18px;font-weight:700;margin-bottom:20px;letter-spacing:-0.3px;">새 항목 추가</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7684;display:block;margin-bottom:5px;">카테고리</label>
+        <select id="newCat" style="width:100%;padding:10px 12px;border:1.5px solid #E8EBF0;border-radius:10px;font-family:inherit;font-size:14px;color:#191F28;outline:none;">
+          <option value="banking">🏦 펌뱅킹</option>
+          <option value="network">🌐 네트워크</option>
+          <option value="terms">📝 업무 용어</option>
+          <option value="cases">🛠️ 대응 사례</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7684;display:block;margin-bottom:5px;">용어 / 제목</label>
+        <input id="newTitle" type="text" placeholder="예: ACH 이체" style="width:100%;padding:10px 12px;border:1.5px solid #E8EBF0;border-radius:10px;font-family:inherit;font-size:14px;color:#191F28;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7684;display:block;margin-bottom:5px;">한줄 설명</label>
+        <input id="newSubtitle" type="text" placeholder="짧게 요약" style="width:100%;padding:10px 12px;border:1.5px solid #E8EBF0;border-radius:10px;font-family:inherit;font-size:14px;color:#191F28;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7684;display:block;margin-bottom:5px;">상세 설명 (서식 적용 가능)</label>
+        <div class="editor-toolbar">
+          <button type="button" onclick="formatText('bold')" title="굵게"><b>B</b></button>
+          <button type="button" onclick="formatText('italic')" title="기울임"><i>I</i></button>
+          <button type="button" onclick="formatText('underline')" title="밑줄"><u>U</u></button>
+          <button type="button" onclick="formatText('strikeThrough')" title="취소선"><strike>S</strike></button>
+          <div style="width:1px; background:var(--border); margin:0 5px;"></div>
+          <button type="button" onclick="formatText('insertOrderedList')" title="숫자 목록">1.</button>
+          <button type="button" onclick="formatText('insertUnorderedList')" title="글머리 기호">•</button>
+        </div>
+        <div id="newDesc" contenteditable="true" class="rich-editor"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button onclick="closeModal()" style="flex:1;padding:12px;border:1.5px solid #E8EBF0;border-radius:10px;background:#F2F4F8;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;color:#6B7684;">취소</button>
+      <button onclick="saveEntry()" style="flex:2;padding:12px;border:none;border-radius:10px;background:#3182F6;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;color:#fff;">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+  import { getDatabase, ref, onValue, push, set, remove, update } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBmMtA_CFvpJ870tCLxeR63PDOdwH4Wius",
+    authDomain: "ihb-newbie.firebaseapp.com",
+    projectId: "ihb-newbie",
+    storageBucket: "ihb-newbie.firebasestorage.app",
+    messagingSenderId: "679511879077",
+    appId: "1:679511879077:web:34f850db4939fdc4318c4c",
+    measurementId: "G-9NCVGLLJ5L",
+    databaseURL: "https://ihb-newbie-default-rtdb.firebaseio.com/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const entriesRef = ref(db, 'entries');
+
+  // 전역 변수 설정
+  window.entries = [];
+  window.currentCat = 'all';
+  window.searchQuery = '';
+  window.editingKey = null; // 수정 모드일 때 사용할 Firebase 고유 키
+
+  const CATEGORIES = {
+    banking: { label: '펌뱅킹', color: '#3182F6', icon: '🏦' },
+    network: { label: '네트워크', color: '#00C48C', icon: '🌐' },
+    terms:   { label: '업무 용어', color: '#FF6B35', icon: '📝' },
+    cases:   { label: '대응 사례', color: '#9B59B6', icon: '🛠️' },
+  };
+
+  // 실시간 데이터 수신
+  onValue(entriesRef, (snapshot) => {
+    const data = snapshot.val();
+    window.entries = [];
+    if (data) {
+      for (const [key, value] of Object.entries(data)) {
+        window.entries.push({ firebaseKey: key, ...value });
+      }
+    } else {
+      // DB가 완전히 비어있을 경우 초기 목업 데이터 투입 방어 로직
+      seedInitialData();
+    }
+    
+    // 데이터 갱신 후 화면 다시 그리기
+    window.renderStats();
+    window.renderCounts();
+    window.renderEntries();
+  });
+
+  // UI 렌더링 함수들 (글로벌 접근을 위해 window 객체에 할당)
+  window.renderStats = function() {
+    const bar = document.getElementById('statsBar');
+    const total = window.entries.length;
+    
+    const cats = [
+      { id: 'all', icon: '📚', label: '전체 보기', cnt: total, colorClass: 'gray' },
+      { id: 'banking', icon: '🏦', label: '펌뱅킹', cnt: window.entries.filter(e => e.cat === 'banking').length, colorClass: 'blue' },
+      { id: 'network', icon: '🌐', label: '네트워크', cnt: window.entries.filter(e => e.cat === 'network').length, colorClass: 'green' },
+      { id: 'terms',   icon: '📝', label: '업무 용어', cnt: window.entries.filter(e => e.cat === 'terms').length, colorClass: 'orange' },
+      { id: 'cases',   icon: '🛠️', label: '대응 사례', cnt: window.entries.filter(e => e.cat === 'cases').length, colorClass: 'purple' },
+    ];
+    
+    bar.innerHTML = cats.map(c => `
+      <div class="stat-card ${window.currentCat === c.id ? 'active' : ''}" onclick="filterCategory('${c.id}')">
+        <div class="stat-icon ${c.colorClass}">${c.icon}</div>
+        <div><div class="stat-num">${c.cnt}</div><div class="stat-label">${c.label}</div></div>
+      </div>
+    `).join('');
+  };
+
+  window.renderCounts = function() {
+    document.getElementById('cnt-all').textContent = window.entries.length;
+    ['banking','network','terms','cases'].forEach(cat => {
+      document.getElementById('cnt-' + cat).textContent = window.entries.filter(e => e.cat === cat).length;
+    });
+  };
+
+  window.renderEntries = function() {
+    const grid = document.getElementById('entriesGrid');
+    const empty = document.getElementById('emptyState');
+    const q = window.searchQuery.toLowerCase();
+
+    let filtered = window.entries.filter(e => {
+      const catMatch = window.currentCat === 'all' || e.cat === window.currentCat;
+      const searchMatch = !q || 
+                          e.title.toLowerCase().includes(q) || 
+                          e.subtitle.toLowerCase().includes(q) || 
+                          (e.desc || '').toLowerCase().includes(q) || 
+                          (e.tags || []).some(t => t.toLowerCase().includes(q));
+      return catMatch && searchMatch;
+    });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    grid.innerHTML = filtered.map(e => {
+      const catInfo = CATEGORIES[e.cat];
+      
+      const infoGrid = e.info && e.info.length ? `
+        <div class="entry-section">
+          <div class="entry-section-label">핵심 정보</div>
+          <div class="info-grid">
+            ${e.info.map(i => `<div class="info-item"><div class="info-item-label">${i.label}</div><div class="info-item-value">${i.value}</div></div>`).join('')}
+          </div>
+        </div>` : '';
+
+      const stepsHtml = e.steps && e.steps.length ? `
+        <div class="entry-section">
+          <div class="entry-section-label">처리 절차</div>
+          <div class="steps-list">
+            ${e.steps.map((s, i) => `<div class="step-row"><div class="step-num">${i+1}</div><span>${s}</span></div>`).join('')}
+          </div>
+        </div>` : '';
+
+      const alertHtml = e.alert ? `<div class="alert-box alert-${e.alert.type}">${e.alert.text}</div>` : '';
+      const tagsHtml = e.tags && e.tags.length ? `<div class="tag-list">${e.tags.map(t => `<span class="mini-tag">${t}</span>`).join('')}</div>` : '';
+
+      return `
+      <div class="entry-card" id="card-${e.firebaseKey}">
+        <div class="entry-header" onclick="toggleCard('${e.firebaseKey}', event)">
+          <span class="entry-tag tag-${e.cat}">${catInfo.icon} ${catInfo.label}</span>
+          <div class="entry-title-wrap">
+            <div class="entry-title">${e.title}</div>
+            <div class="entry-subtitle">${e.subtitle}</div>
+          </div>
+          <div class="entry-chevron">⌄</div>
+        </div>
+        <div class="entry-body">
+          <div class="admin-actions">
+            <button class="btn-sm btn-edit" onclick="openEditModal('${e.firebaseKey}')">수정</button>
+            <button class="btn-sm btn-delete" onclick="deleteEntry('${e.firebaseKey}')">삭제</button>
+          </div>
+          <div class="entry-section" style="margin-top: 10px;">
+            <div class="entry-section-label">설명</div>
+            <div class="entry-desc">${e.desc}</div>
+          </div>
+          ${infoGrid}
+          ${stepsHtml}
+          ${alertHtml}
+          ${tagsHtml}
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  // 상호작용 함수들
+  window.filterCategory = function(cat, navEl = null) {
+    window.currentCat = cat;
+    
+    // 사이드바 액티브 토글
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (navEl) {
+      navEl.classList.add('active');
+    } else {
+      document.querySelectorAll('.nav-item').forEach(n => {
+        const txt = n.textContent.trim();
+        if (cat === 'all' && txt.startsWith('전체')) n.classList.add('active');
+        if (cat === 'banking' && txt.startsWith('펌뱅킹')) n.classList.add('active');
+        if (cat === 'network' && txt.startsWith('네트워크')) n.classList.add('active');
+        if (cat === 'terms' && txt.startsWith('업무')) n.classList.add('active');
+        if (cat === 'cases' && txt.startsWith('대응')) n.classList.add('active');
+      });
+    }
+
+    // StatsBar 리렌더링하여 active 클래스 적용
+    window.renderStats();
+    window.renderEntries();
+  };
+
+  window.onSearch = function(val) {
+    window.searchQuery = val;
+    window.renderEntries();
+  };
+
+  // 아코디언 동작 제어 (하나 열면 나머지는 닫힘)
+  window.toggleCard = function(key, event) {
+    const card = document.getElementById('card-' + key);
+    const isExpanding = !card.classList.contains('expanded');
+
+    // 현재 확장된 모든 카드를 닫음
+    document.querySelectorAll('.entry-card.expanded').forEach(c => c.classList.remove('expanded'));
+
+    // 클릭한 카드가 닫혀있던 상태라면 엶
+    if (isExpanding) {
+      card.classList.add('expanded');
+    }
+  };
+
+  // 모달 제어
+  window.openAddModal = function() {
+    window.editingKey = null;
+    document.getElementById('modalTitle').textContent = '새 항목 추가';
+    document.getElementById('newCat').value = 'banking';
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newSubtitle').value = '';
+    document.getElementById('newDesc').innerHTML = ''; // contenteditable 초기화
+    document.getElementById('addModal').style.display = 'flex';
+  };
+
+  window.openEditModal = function(key) {
+    const entry = window.entries.find(e => e.firebaseKey === key);
+    if (!entry) return;
+
+    window.editingKey = key;
+    document.getElementById('modalTitle').textContent = '항목 수정';
+    document.getElementById('newCat').value = entry.cat;
+    document.getElementById('newTitle').value = entry.title;
+    document.getElementById('newSubtitle').value = entry.subtitle;
+    document.getElementById('newDesc').innerHTML = entry.desc; // 기존 HTML 렌더링
+    
+    document.getElementById('addModal').style.display = 'flex';
+  };
+
+  window.closeModal = function() {
+    document.getElementById('addModal').style.display = 'none';
+  };
+
+  // 텍스트 포맷팅 (Rich Editor)
+  window.formatText = function(command) {
+    document.execCommand(command, false, null);
+    document.getElementById('newDesc').focus();
+  };
+
+  // 저장 (추가/수정 분기 처리)
+  window.saveEntry = function() {
+    const cat = document.getElementById('newCat').value;
+    const title = document.getElementById('newTitle').value.trim();
+    const subtitle = document.getElementById('newSubtitle').value.trim();
+    const desc = document.getElementById('newDesc').innerHTML.trim(); // HTML 그대로 저장
+
+    if (!title || !desc) { 
+      alert('제목과 설명을 모두 입력해주세요.'); 
+      return; 
+    }
+
+    if (window.editingKey) {
+      // 데이터 수정
+      const existingEntry = window.entries.find(e => e.firebaseKey === window.editingKey);
+      const updates = {
+        ...existingEntry,
+        cat, title, subtitle, desc,
+        // 기타 속성들(info, steps 등)은 기존 데이터 유지
+      };
+      delete updates.firebaseKey; // DB에 키 자체를 중복 저장하지 않기 위함
+      
+      const entryRef = ref(db, `entries/${window.editingKey}`);
+      update(entryRef, updates).then(() => {
+        window.closeModal();
+      }).catch(err => alert('수정 실패: ' + err.message));
+
+    } else {
+      // 새 데이터 추가
+      const newData = {
+        cat, title, 
+        subtitle: subtitle || '직접 추가된 항목', 
+        desc, 
+        info: [], steps: [], alert: null, tags: [] // 기본값
+      };
+      push(entriesRef, newData).then(() => {
+        window.closeModal();
+      }).catch(err => alert('추가 실패: ' + err.message));
+    }
+  };
+
+  // 항목 삭제
+  window.deleteEntry = function(key) {
+    if(confirm('정말 이 항목을 삭제하시겠습니까?')) {
+      const entryRef = ref(db, `entries/${key}`);
+      remove(entryRef).catch(err => alert('삭제 실패: ' + err.message));
+    }
+  };
+
+  window.scrollToTop = function() { 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+  };
+
+  // DB가 텅 비었을 경우 대비한 초기화 스크립트 (기존 test.html 데이터)
+  function seedInitialData() {
+    const initData = [
+      {
+        cat: 'cases', title: '배치 작업 실패 (Batch Failure)', subtitle: '야간 배치가 실패했을 때 확인 및 대응 절차',
+        desc: '배치 작업 실패는 <strong>오전 출근 후 또는 모니터링 알람</strong>으로 인지하는 경우가 많습니다. 원인 파악 후 재기동 여부를 판단해야 하며, 데이터 정합성 확인이 가장 중요합니다.',
+        info: [{ label: '인지 방법', value: '모니터링 알람, 로그' }, { label: '재기동 전', value: '반드시 원인 파악 먼저' }, { label: '정합성 체크', value: '원장 잔액 대조 필수' }, { label: '보고 기준', value: '영업 영향 시 즉시 보고' }],
+        steps: ['배치 로그 파일에서 실패 지점 및 에러 메시지 확인', '해당 단계까지 처리된 데이터 현황 파악', '재기동 시 중복 처리 여부 검토', '담당자/팀장에게 상황 보고', '원인 조치 후 재기동 또는 수동 처리 결정', '처리 완료 후 정합성 검증 및 결과 보고'],
+        alert: { type: 'warn', text: '⚠️ 배치 재기동 전 반드시 Checkpoint(체크포인트)를 확인하고, 이미 처리된 건이 재처리되지 않도록 해야 합니다.' }, tags: ['배치', '장애', '재기동', '정합성', '로그']
+      },
+      {
+        cat: 'banking', title: '펌뱅킹 (Firm Banking)', subtitle: '기업과 은행 간 전용 통신망을 통한 금융 거래 서비스',
+        desc: '펌뱅킹은 <strong>기업(Firm)과 은행이 전용 네트워크</strong>로 연결되어 자금 이체, 잔액 조회, 거래 내역 조회 등을 자동화하는 서비스입니다.',
+        info: [{ label: '연결 방식', value: '전용선 / VAN' }, { label: '주요 용도', value: '급여이체, 대량송금' }],
+        steps: [], alert: null, tags: ['급여이체', '대량이체']
+      }
+    ];
+    // 한 번만 실행되도록
+    initData.forEach(data => push(entriesRef, data));
+  }
+  
+window.addEventListener('keydown', function(e) {
+  // Ctrl + F (또는 Mac의 경우 Command + F) 조합인지 확인
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    // 1. 브라우저의 기본 찾기 창이 뜨는 것을 방지
+    e.preventDefault();
+    
+    // 2. 용어 검색 input 엘리먼트를 찾아서 커서 포커스
+    const searchInput = document.getElementById('sidebarSearch');
+    if (searchInput) {
+      searchInput.focus();
+      
+      // (선택 사항) 기존에 입력된 텍스트가 있다면 전체 선택되게 하여 바로 수정 가능하게 함
+      searchInput.select();
+    }
+  }
+});
+</script>
+</body>
+</html>
