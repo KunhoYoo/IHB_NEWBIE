@@ -529,7 +529,7 @@
       </div>
       <div class="nav-item" onclick="filterCategory('banking', this)">
         <div class="nav-icon">🏦</div>
-        펌뱅킹
+        웹케시
         <span class="nav-count" id="cnt-banking">0</span>
       </div>
       <div class="nav-item" onclick="filterCategory('network', this)">
@@ -563,7 +563,7 @@
   <main class="main" id="mainPanel">
     <div class="page-header">
       <h1>신입 교육 백과사전 📖</h1>
-      <p>펌뱅킹 · 네트워크 · 업무 용어 · 대응 사례를 한곳에서 빠르게 찾아보세요.</p>
+      <p>웹케시 · 네트워크 · 업무 용어 · 대응 사례를 한곳에서 빠르게 찾아보세요.</p>
     </div>
 
     <div class="stats-bar" id="statsBar"></div>
@@ -585,7 +585,7 @@
       <div>
         <label style="font-size:12px;font-weight:600;color:#6B7684;display:block;margin-bottom:5px;">카테고리</label>
         <select id="newCat" style="width:100%;padding:10px 12px;border:1.5px solid #E8EBF0;border-radius:10px;font-family:inherit;font-size:14px;color:#191F28;outline:none;">
-          <option value="banking">🏦 펌뱅킹</option>
+          <option value="banking">🏦 웹케시</option>
           <option value="network">🌐 네트워크</option>
           <option value="terms">📝 업무 용어</option>
           <option value="cases">🛠️ 대응 사례</option>
@@ -646,7 +646,7 @@
   window.editingKey = null; // 수정 모드일 때 사용할 Firebase 고유 키
 
   const CATEGORIES = {
-    banking: { label: '펌뱅킹', color: '#3182F6', icon: '🏦' },
+    banking: { label: '웹케시', color: '#3182F6', icon: '🏦' },
     network: { label: '네트워크', color: '#00C48C', icon: '🌐' },
     terms:   { label: '업무 용어', color: '#FF6B35', icon: '📝' },
     cases:   { label: '대응 사례', color: '#9B59B6', icon: '🛠️' },
@@ -678,7 +678,7 @@
     
     const cats = [
       { id: 'all', icon: '📚', label: '전체 보기', cnt: total, colorClass: 'gray' },
-      { id: 'banking', icon: '🏦', label: '펌뱅킹', cnt: window.entries.filter(e => e.cat === 'banking').length, colorClass: 'blue' },
+      { id: 'banking', icon: '🏦', label: '웹케시', cnt: window.entries.filter(e => e.cat === 'banking').length, colorClass: 'blue' },
       { id: 'network', icon: '🌐', label: '네트워크', cnt: window.entries.filter(e => e.cat === 'network').length, colorClass: 'green' },
       { id: 'terms',   icon: '📝', label: '업무 용어', cnt: window.entries.filter(e => e.cat === 'terms').length, colorClass: 'orange' },
       { id: 'cases',   icon: '🛠️', label: '대응 사례', cnt: window.entries.filter(e => e.cat === 'cases').length, colorClass: 'purple' },
@@ -787,7 +787,7 @@
       document.querySelectorAll('.nav-item').forEach(n => {
         const txt = n.textContent.trim();
         if (cat === 'all' && txt.startsWith('전체')) n.classList.add('active');
-        if (cat === 'banking' && txt.startsWith('펌뱅킹')) n.classList.add('active');
+        if (cat === 'banking' && txt.startsWith('웹케시')) n.classList.add('active');
         if (cat === 'network' && txt.startsWith('네트워크')) n.classList.add('active');
         if (cat === 'terms' && txt.startsWith('업무')) n.classList.add('active');
         if (cat === 'cases' && txt.startsWith('대응')) n.classList.add('active');
@@ -917,8 +917,8 @@
         alert: { type: 'warn', text: '⚠️ 배치 재기동 전 반드시 Checkpoint(체크포인트)를 확인하고, 이미 처리된 건이 재처리되지 않도록 해야 합니다.' }, tags: ['배치', '장애', '재기동', '정합성', '로그']
       },
       {
-        cat: 'banking', title: '펌뱅킹 (Firm Banking)', subtitle: '기업과 은행 간 전용 통신망을 통한 금융 거래 서비스',
-        desc: '펌뱅킹은 <strong>기업(Firm)과 은행이 전용 네트워크</strong>로 연결되어 자금 이체, 잔액 조회, 거래 내역 조회 등을 자동화하는 서비스입니다.',
+        cat: 'banking', title: '웹케시 (Firm Banking)', subtitle: '기업과 은행 간 전용 통신망을 통한 금융 거래 서비스',
+        desc: '웹케시은 <strong>기업(Firm)과 은행이 전용 네트워크</strong>로 연결되어 자금 이체, 잔액 조회, 거래 내역 조회 등을 자동화하는 서비스입니다.',
         info: [{ label: '연결 방식', value: '전용선 / VAN' }, { label: '주요 용도', value: '급여이체, 대량송금' }],
         steps: [], alert: null, tags: ['급여이체', '대량이체']
       }
