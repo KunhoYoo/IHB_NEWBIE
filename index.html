@@ -451,15 +451,62 @@
     .main { padding: 24px 20px; }
     .info-grid { grid-template-columns: 1fr; }
   }
+/* 로그인 창 & 시계 스타일 */
+#loginOverlay {
+  position: fixed; inset: 0; background: #F7F8FA; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+}
+.login-card {
+  background: #fff; padding: 40px; border-radius: 24px; 
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1); width: 360px; text-align: center;
+}
+.login-card h2 { font-weight: 700; margin-bottom: 20px; }
+.login-card input {
+  width: 100%; padding: 14px; border: 1.5px solid #E8EBF0; 
+  border-radius: 12px; margin-bottom: 10px; outline: none;
+}
+.login-card button {
+  width: 100%; padding: 14px; background: #3182F6; color: #fff; 
+  border: none; border-radius: 12px; margin-top: 10px; font-weight: 600; cursor: pointer;
+}
+.custom-logo { width: 75px; height: auto; display: block; }
+#topClock {
+  position: absolute; top: 40px; right: 48px;
+  font-size: 14px; color: #ADB5BD; font-weight: 500; font-family: 'Pretendard', sans-serif;
+}
+/* 로그인 화면 전용 큰 로고 */
+.login-logo {
+  width: 160px; /* 사이드바(75px)보다 크게 설정 */
+  height: auto;
+  margin-bottom: 30px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* 권한 제어용 */
+.admin-only { display: none !important; }
+  
 </style>
 </head>
 <body>
+<div id="loginOverlay">
+  <div class="login-card">
+    <img src="logo.png" alt="로고" class="login-logo">
+    
+    <input type="text" id="userIdInput" placeholder="User ID" 
+           onkeyup="if(window.event.keyCode==13) handleLogin()">
+    <input type="password" id="userPwInput" placeholder="Password" 
+           onkeyup="if(window.event.keyCode==13) handleLogin()">
+    
+    <button onclick="handleLogin()">로그인</button>
+  </div>
+</div>
 <div class="layout">
 
   <aside class="sidebar">
-<div class="sidebar-logo">
+<div class="sidebar-logo" onclick="handleLogout()" title="클릭 시 로그아웃" style="cursor:pointer;">
   <div class="logo-badge">
-    <img src="logo.png" alt="위키백과 내부판 로고" class="custom-logo">
+    <img src="logo.png" alt="로고" class="custom-logo">
   </div>
   <div class="logo-sub">신입 교육 지식 베이스 v1.0</div>
 </div>
@@ -526,6 +573,8 @@
       <div class="empty-icon">🔎</div>
       <p>검색 결과가 없거나 데이터를 불러오는 중입니다.</p>
     </div>
+	<main class="main">
+  <div id="topClock"></div> <header class="page-header">
   </main>
 </div>
 
@@ -650,78 +699,82 @@
     });
   };
 
-  window.renderEntries = function() {
-    const grid = document.getElementById('entriesGrid');
-    const empty = document.getElementById('emptyState');
-    const q = window.searchQuery.toLowerCase();
+ window.renderEntries = function() {
+  const grid = document.getElementById('entriesGrid');
+  const empty = document.getElementById('emptyState');
+  const q = window.searchQuery.toLowerCase();
 
-    let filtered = window.entries.filter(e => {
-      const catMatch = window.currentCat === 'all' || e.cat === window.currentCat;
-      const searchMatch = !q || 
-                          e.title.toLowerCase().includes(q) || 
-                          e.subtitle.toLowerCase().includes(q) || 
-                          (e.desc || '').toLowerCase().includes(q) || 
-                          (e.tags || []).some(t => t.toLowerCase().includes(q));
-      return catMatch && searchMatch;
-    });
+  let filtered = window.entries.filter(e => {
+    const catMatch = window.currentCat === 'all' || e.cat === window.currentCat;
+    const searchMatch = !q || 
+                        e.title.toLowerCase().includes(q) || 
+                        e.subtitle.toLowerCase().includes(q) || 
+                        (e.desc || '').toLowerCase().includes(q) || 
+                        (e.tags || []).some(t => t.toLowerCase().includes(q));
+    return catMatch && searchMatch;
+  });
 
-    if (filtered.length === 0) {
-      grid.innerHTML = '';
-      empty.style.display = 'block';
-      return;
-    }
-    empty.style.display = 'none';
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
 
-    grid.innerHTML = filtered.map(e => {
-      const catInfo = CATEGORIES[e.cat];
-      
-      const infoGrid = e.info && e.info.length ? `
-        <div class="entry-section">
-          <div class="entry-section-label">핵심 정보</div>
-          <div class="info-grid">
-            ${e.info.map(i => `<div class="info-item"><div class="info-item-label">${i.label}</div><div class="info-item-value">${i.value}</div></div>`).join('')}
-          </div>
-        </div>` : '';
-
-      const stepsHtml = e.steps && e.steps.length ? `
-        <div class="entry-section">
-          <div class="entry-section-label">처리 절차</div>
-          <div class="steps-list">
-            ${e.steps.map((s, i) => `<div class="step-row"><div class="step-num">${i+1}</div><span>${s}</span></div>`).join('')}
-          </div>
-        </div>` : '';
-
-      const alertHtml = e.alert ? `<div class="alert-box alert-${e.alert.type}">${e.alert.text}</div>` : '';
-      const tagsHtml = e.tags && e.tags.length ? `<div class="tag-list">${e.tags.map(t => `<span class="mini-tag">${t}</span>`).join('')}</div>` : '';
-
-      return `
-      <div class="entry-card" id="card-${e.firebaseKey}">
-        <div class="entry-header" onclick="toggleCard('${e.firebaseKey}', event)">
-          <span class="entry-tag tag-${e.cat}">${catInfo.icon} ${catInfo.label}</span>
-          <div class="entry-title-wrap">
-            <div class="entry-title">${e.title}</div>
-            <div class="entry-subtitle">${e.subtitle}</div>
-          </div>
-          <div class="entry-chevron">⌄</div>
+  grid.innerHTML = filtered.map(e => {
+    const catInfo = CATEGORIES[e.cat] || { icon: '📝', label: '기타' };
+    
+    const infoGrid = e.info && e.info.length ? `
+      <div class="entry-section">
+        <div class="entry-section-label">핵심 정보</div>
+        <div class="info-grid">
+          ${e.info.map(i => `<div class="info-item"><div class="info-item-label">${i.label}</div><div class="info-item-value">${i.value}</div></div>`).join('')}
         </div>
-        <div class="entry-body">
-          <div class="admin-actions">
-            <button class="btn-sm btn-edit" onclick="openEditModal('${e.firebaseKey}')">수정</button>
-            <button class="btn-sm btn-delete" onclick="deleteEntry('${e.firebaseKey}')">삭제</button>
-          </div>
-          <div class="entry-section" style="margin-top: 10px;">
-            <div class="entry-section-label">설명</div>
-            <div class="entry-desc">${e.desc}</div>
-          </div>
-          ${infoGrid}
-          ${stepsHtml}
-          ${alertHtml}
-          ${tagsHtml}
-        </div>
-      </div>`;
-    }).join('');
-  };
+      </div>` : '';
 
+    const stepsHtml = e.steps && e.steps.length ? `
+      <div class="entry-section">
+        <div class="entry-section-label">처리 절차</div>
+        <div class="steps-list">
+          ${e.steps.map((s, i) => `<div class="step-row"><div class="step-num">${i+1}</div><span>${s}</span></div>`).join('')}
+        </div>
+      </div>` : '';
+
+    const alertHtml = e.alert ? `<div class="alert-box alert-${e.alert.type}">${e.alert.text}</div>` : '';
+    const tagsHtml = e.tags && e.tags.length ? `<div class="tag-list">${e.tags.map(t => `<span class="mini-tag">${t}</span>`).join('')}</div>` : '';
+
+    // ★★★ 아래 부분이 수정되었습니다 ★★★
+    return `
+    <div class="entry-card" id="card-${e.firebaseKey}">
+      <div class="entry-header" onclick="toggleCard('${e.firebaseKey}', event)">
+        <span class="entry-tag tag-${e.cat}">${catInfo.icon} ${catInfo.label}</span>
+        <div class="entry-title-wrap">
+          <div class="entry-title">${e.title}</div>
+          <div class="entry-subtitle">${e.subtitle}</div>
+        </div>
+        <div class="entry-chevron">⌄</div>
+      </div>
+      <div class="entry-body">
+        
+        ${window.userRole === 'admin' ? `
+        <div class="admin-actions">
+          <button class="btn-sm btn-edit" onclick="openEditModal('${e.firebaseKey}')">수정</button>
+          <button class="btn-sm btn-delete" onclick="deleteEntry('${e.firebaseKey}')">삭제</button>
+        </div>
+        ` : ''}
+
+        <div class="entry-section" style="margin-top: 10px;">
+          <div class="entry-section-label">설명</div>
+          <div class="entry-desc">${e.desc}</div>
+        </div>
+        ${infoGrid}
+        ${stepsHtml}
+        ${alertHtml}
+        ${tagsHtml}
+      </div>
+    </div>`;
+  }).join('');
+};
   // 상호작용 함수들
   window.filterCategory = function(cat, navEl = null) {
     window.currentCat = cat;
@@ -886,6 +939,64 @@ window.addEventListener('keydown', function(e) {
       searchInput.focus();
       
       // (선택 사항) 기존에 입력된 텍스트가 있다면 전체 선택되게 하여 바로 수정 가능하게 함
+      searchInput.select();
+    }
+  }
+});
+
+// 1. 시계 기능 (초단위 포함)
+function updateClock() {
+  const now = new Date();
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const day = days[now.getDay()];
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  
+  const clockEl = document.getElementById('topClock');
+  if(clockEl) clockEl.textContent = `${y}-${m}-${d} (${day}) ${hh}:${mm} ${ss}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+window.handleLogin = function() {
+  const id = document.getElementById('userIdInput').value.trim();
+  const pw = document.getElementById('userPwInput').value.trim();
+
+  let role = "";
+  if (id === 'admin' && pw === 'webcash1!') role = "admin";
+  else if (id === 'newbie' && pw === 'webcash2@') role = "newbie";
+
+  if (role) {
+    window.userRole = role; // 1. 전역 변수에 역할 저장
+    document.getElementById('loginOverlay').style.display = 'none';
+    
+    // 2. 권한에 맞게 화면을 다시 그림 (버튼 생성 여부 결정)
+    renderEntries(); 
+    
+    if (role === 'newbie') {
+      document.querySelectorAll('.admin-only').forEach(el => el.style.setProperty('display', 'none', 'important'));
+    }
+  } else {
+    alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+  }
+};
+
+// 3. 로그아웃 (새로고침으로 초기화)
+window.handleLogout = function() {
+  if (confirm('로그아웃 하시겠습니까?')) location.reload();
+};
+
+// 4. Ctrl+F 검색창 포커스
+window.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault();
+    const searchInput = document.querySelector('.search-wrap input');
+    if (searchInput) {
+      searchInput.focus();
       searchInput.select();
     }
   }
